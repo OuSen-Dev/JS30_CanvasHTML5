@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML5 Canvas</title>
+  <link rel="icon" href="https://fav.farm/🔥" />
+</head>
+<body>
+<canvas id="draw" width="800" height="800"></canvas>
+<script>
+  const canvas = document.querySelector('#draw');
+  // context
+  const ctx = canvas.getContext('2d');
+
+  // size
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  // colors and lines
+  ctx.lineJoin = 'round';
+  ctx.lineCap ='round';
+  ctx.lineWidth = 100;
+  
+
+  //  flag variable to draw or not
+  let isDrawing = false;
+
+  // line stop
+  let lastX = 0;
+  let lastY = 0;
+
+  // color variable
+  let hue = 0;
+  // size variable
+  let direction = true;
+
+  // function to draw
+  function draw(e) {
+    if(!isDrawing) return; // stop the function when not mouse down
+    // start color
+    ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+    // starting up the line
+    ctx.beginPath();
+    // start from
+    ctx.moveTo(lastX, lastY);
+    // go to
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.stroke();
+    [lastX, lastY] = [e.offsetX, e.offsetY]; //update last X and Y
+
+    //color update
+    hue++; // increment to update color
+    if(hue >= 360) {
+      hue = 0; //loop starts over
+    }
+
+    // size update
+    if(ctx.lineWidth >= 100 || ctx.lineWidth <= 1) {
+      direction = !direction // flip direction in the other way 
+    }
+    if(direction) { // true
+      ctx.lineWidth++; // size up
+    } else { // false
+      ctx.lineWidth--; // size down
+    }
+  }
+
+  // eventlistener to trigger drawing or not
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mousedown', (e) => {
+    isDrawing = true;
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+  });
+  canvas.addEventListener('mouseup', () => isDrawing = false);
+  canvas.addEventListener('mouseout', () => isDrawing = false);
+
+</script>
+
+<style>
+  html, body {
+    margin: 0;
+  }
+</style>
+
+</body>
+</html>
